@@ -1,0 +1,469 @@
+MAVEN:
+------
+1. Introduction
+2. POM File[Project Object Model]
+3. Arche Types in MAVEN
+4. Steps to Use MAVEN For Applications
+5. JDBC Application with MAVEN
+6. A Simple Web Application with MAVEN
+7. Spring Application With MAVEN
+
+
+Introduction:->
+-> MAVEN is a "Yiddish" [German Language], its meaning is "Accumulator of Knowledge".
+-> MAVEN is a Build Tool, It will perform 
+1. Directory Structures to the Applications.
+2. Downloads the required Dependencies[JARs].
+3. Compile the Source code.
+4. Compile Test code.
+5. Packaging the Applications.
+6. Run Applications
+7. Starts the Server
+8. Deploying the Application
+9. Perform Unit Testing
+10. Perpare Reports and Documents
+11. Undeployment of our applications.
+12. Stop Server.
+----etc
+
+Structure of maven application:->
+-> Pom.xml,Application,MAVEN,console,plugins are the part of the maven architecture.
+Plugins:->
+get dependencies
+compilation
+run
+packaging
+deploy
+start server
+reports etc
+
+Pom.xml:->
+-> Project Configuration Details are existed here like dependencies, repositories, plugins,resources etc.
+
+MAVEN:->
+Console :->
+Application:->
+
+-> When the user wants to perform maven lifecycle action like compilation,run, packaging etc then maven asks for the
+required configuration data from the pom.xml, after getting the data from pom.xml file then maven asks for the required
+data from application then shows information to the console.
+--------------------------------------------------------------------------------------------------------------------------
+
+
+POM File[Project Object Model]:->
+-> It is the heart of MAVEN.
+-> It will provide all the project build configuration which are required by MAVEN.
+-> It is an XML file, in the initial versions of MAVEN, pom file name is project.xml, later on pom.xml.
+-> When we create MAVEN project then pom.xml file will be created automatically.
+-> In Maven projects, pom.xml file is able to provide no of responsibilites.
+1. Project Description
+2. Repository
+3. Dependency Management
+4. Project Inheritance
+5. Build Configurations
+6. Build Profiles
+
+Project Description:->
+-> It will provide some details about the project like project anme,version number,packaging type,
+and so on.
+<project>
+	<!-- Project Description -->
+	<modelVersion>4.0.0</modelVersion> ---> Maven version 2.x and 3.x
+	<groupId>com.durgasoft.banking</groupId> ---> it an unique id for our company
+	<artifactId>icici.accounts</artifactId> ---> Application name
+	<description>Application for Accountin in icici </description> ---> general information about project 
+	<packaging>jar/war/ear</packaging>
+	-----
+	----
+</project>
+
+
+Repository:->
+-> Repository is a place [location in system, in internet, a system in our company] which will provide all the
+dependent jar files to our application.
+-> Repositories are able to manage all the jar files which are required by our applications.
+-> There are three types of repositores are existed in MAVEN.
+i. Local Repository
+ii. Central Repository
+iii. Remote Repository
+
+Local Repository:->
+-> It is a location in our system, which will be created by any mvn command initially.
+-> In our System Local Repository is existed at .m2 folder.
+-> When we required jar files in our applications then MAVEN will search for the dependencies first in Local respository.
+
+Central Repository:->
+-> It is the default repository in MAVEN, it is existed in internet at a particular URL.
+-> Apache Software Foundations has provided a seperate central repository in the form of "https://repo.maven.apache.org/
+maven2/".
+-> We are able to use third party provided central repositories in MAVEN.
+	1. "https://mvnrepository.com
+	2. https:/repository.jboss.org/nexus/content/groups/public/
+-> If we want to use third party provided repositories in our applications then we must configure it in pom.xml
+<project>
+	<repositories>
+	<repository>
+		<id>jboss</id>
+		<name>jboss repo</name>
+		<url>https:/repository.jboss.org/nexus/content/groups/public/</url>
+	</repository>
+	</repositories>
+	
+</project>
+
+
+Remote Repositories:->
+-> If the dependencies are not existed in Local repositories, Central repository then MAVEN will search for then in Remote
+Repository.
+
+
+Note:->
+-> if dependencies are existed in local repository then maven will use them from there.
+-> If dependencies are not existed in local repost then maven will search at central repo.
+-> If the dependencies are existed at central repo then maven will donload them to local repo.
+-> if the dependencies are not existed in central repo then maven will search at remote repo.
+-> if the dependencies are existed in remote repo then mvn will download then to local repo.
+-> If Remote repository is not existed or dependencies are not existed in Remote repo then Maven
+will raise some exception.
+
+
+Dependency Management:->
+-> In MAVEN projects, dependency means that a dependent JAR file.
+-> MAVEN is not giving any option to the developers to download the required JAR files, MAVEN will download the required
+jar files and MAVEN will keep that JAR files in our application,but we must specify which dependencies we need in our 
+applications.
+<project>
+	<dependencies>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>3.4.6-Final</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+</project>
+
+-> MAVEN provides transitive dependencies management. if hibernate-core is dependent on other class files like common-
+logging,common-other, then maven will download those dependent dependencies as well.
+
+
+Scopes in MAVEN:->
+1. compile
+2. provided
+3. runtime
+4. test
+5. system
+6. import
+
+
+Project Inheritance:->
+Parent Pom:->
+<project ....>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.durgasoft</groupId>
+	<artifactId>my-parent</artifactId>
+	<version>1.0</version>
+	<packaging>pom</packaging>
+</project>
+
+Child Pom:->
+<project ....>
+	<parent>
+		<groupId>com.durgasoft</groupId>
+		<artifactId>my-parent</artifactId>
+		<version>1.0.0</version>
+	</parent>
+</project>
+
+-> Effective POM = Super POM + Present App POM
+-> mvn help:effective-pom
+
+
+
+Build Configurations:->
+i. Plugin Configurations
+ii. Resource Configurations
+
+Plugin Configurations:->
+-> There are two types of plugins available in maven
+i. build plugins
+ii. reporting plugins
+
+Build Plugins:
+i. clean
+ii. compiler
+iii. deploy
+iv. install
+v. resources
+vi ear:
+vii. jar
+viii. war
+
+Reporting Plugins:->
+i. javadoc
+ii. project-info-reports
+iii. surfire-reports
+
+
+<project>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configurations>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configurations>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+
+-> maven project is avaialble only with java 1.5 version. if we want to use 1.8 then we have to customize it like above.
+
+
+Resources Configurations:->
+<project>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+	</build>
+</project>
+
+
+Build Profiles:->
+i. Development Mode
+ii. Testing Mode
+iii. Production Mode
+
+db.properties:
+jdbc.connection.url = ${jdbc.connection.url}
+
+<project>
+	<profiles>
+		<profile>
+			<id>development</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>	
+				<jdbc.connection.url>jdbc:oracle:thin:@localhost:1521:orcl</jdbc.connection.url>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>test</id>
+			<properties>	
+				<jdbc.connection.url>jdbc:mysql://localhost:3306/db_name</jdbc.connection.url>
+			</properties>
+		</profile>
+	</profiles>
+</project>
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Steps to Use MAVEN For Applications:
+-> Install MAVEN Software
+-> Create Maven Project
+-> Write Java Code
+-> Compile Java Code
+-> Execute Java Application
+
+Install MAVEN Software:->
+-> JAVA_HOME:C:/java/JDK1.8.0/bin;
+-> MAVEN_HOME: C:/apache-maven-3.5.4/bin
+-> path: C:/java/JDK1.8/bin;C:/apache-maven-3.5.4/bin;
+
+mvn --version
+
+-> To create a project
+=
+mvn archetype:generate
+-> it will download all archtype maven supported and then create standalone application by asking information from user.
+
+mvn compile
+-> to compile the project
+
+maven test: -> to run test cases
+
+maven packages: -> to create jar file
+
+now set classpath="E:/maven/app/mavenproject/target/sample-1.0.SNAPSHOT.jar
+java com.durgasoft.App
+
+Install oracle dependency in maven from the command line:->
+mvn install:install-fle -DgroupId=oracle -DartifactId=oracle-jdbc -Dpackaging=jar -Dversion=6 -DgeneratePom=true -Dfile=C:\oraclexe\app\
+oracle\product\11.2.0\server\jdbc\lib\ojdbc.jar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
